@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 Canvas</title>
+  </head>
+  <body>
+    <canvas id="draw" width="800" height="800"></canvas>
+    <script>
+      const canvas = document.querySelector("#draw");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.strokeStyle = "#BADA55";
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.lineWidth = 100;
+      //photoshop blend modes
+      ctx.globalCompositeOperation = "multiply";
+
+      // a flag to when is Drawing or not
+      let isDrawing = false;
+
+      // starting and ending drawing point
+      let lastX = 0;
+      let lastY = 0;
+      let hue = 0;
+      let direction = true;
+
+      function draw(e) {
+        // stop the fn from running when they are moused down
+        if (!isDrawing) return;
+        {
+          console.log(e);
+          ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+          ctx.beginPath();
+          // start from
+          ctx.moveTo(lastX, lastY);
+          // go to
+          ctx.lineTo(e.offsetX, e.offsetY);
+          ctx.stroke();
+          // ES6 destructuring array
+          [lastX, lastY] = [e.offsetX, e.offsetY];
+
+          hue++;
+          //Reset Hue until 360
+          if (hue >= 360) {
+            hue = 0;
+          }
+
+          // controlling line width of stroke
+          if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+            direction = !direction;
+          }
+
+          if (direction) {
+            ctx.lineWidth++;
+          } else {
+            ctx.lineWidth--;
+          }
+        }
+      }
+
+      // ready to draw when mouse down
+      canvas.addEventListener("mousedown", (e) => {
+        isDrawing = true;
+        // ES6 destructuring array
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+      });
+
+      // drawing when mouse move
+      canvas.addEventListener("mousemove", draw);
+      // stop drawing when mouse up
+      canvas.addEventListener("mouseup", () => (isDrawing = false));
+      // stop drawing when mouse out of canvas
+      canvas.addEventListener("mouseout", () => (isDrawing = false));
+    </script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+    </style>
+  </body>
+</html>
