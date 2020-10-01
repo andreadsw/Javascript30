@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Key Detection</title>
+    <script
+      type="text/javascript"
+      src="https://www.cornify.com/js/cornify.js"
+    ></script>
+    <style>
+      html {
+        background-color: #e9add7;
+      }
+      .title {
+        color: #b2c4;
+        font-size: 160px;
+        font-weight: bold;
+        line-height: 2em;
+        margin: 0;
+        text-align: center;
+      }
+
+      .secretcode {
+        color: #333;
+        font-size: 80px;
+        text-transform: uppercase;
+        font-weight: 600;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title">The secret code is ...</div>
+    <div class="secretcode"></div>
+    <script>
+      /* Keyboard detection */
+
+      // pressed keys array
+      const pressed = [];
+
+      const secretCode = "love";
+      let secretcode = document.querySelector('.secretcode');
+
+      window.addEventListener("keyup", (e) => {
+        console.log(e.key);
+        pressed.push(e.key);
+        // Looking for the secretCode to splice the array.
+        // Then start looking for the letters from the end.
+        pressed.splice(
+          -secretCode.length - 1,
+          pressed.length - secretCode.length
+        );
+
+        // Find the secretCode then .join('') transform the array into string
+        if (pressed.join("").includes(secretCode)) {
+          // Add fun images on the screen.
+          cornify_add();
+          secretcode.innerHTML = "";
+          secretcode.insertAdjacentHTML("afterbegin", secretCode);
+          console.log('Ah! You just found LOVE!');
+        }
+        console.log(pressed);
+      });
+    </script>
+  </body>
+</html>
