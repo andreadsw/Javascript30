@@ -50,12 +50,37 @@
       <form class="add-items">
         <input type="text" name="item" placeholder="Item Name" required />
         <input type="submit" value="+ Add Item" />
+        <br /><br />
+        <div class="buttons">
+          <input
+            class="check-all"
+            data-action="check"
+            type="button"
+            value="Check All"
+          />
+          <input
+            class="uncheck-all"
+            data-action="uncheck"
+            type="button"
+            value="Uncheck All"
+          />
+          <input
+            class="delete-all"
+            data-action="clear"
+            type="reset"
+            value="Delete All"
+          />
+        </div>
       </form>
     </div>
 
     <script>
       const addItems = document.querySelector(".add-items");
       const itemsList = document.querySelector(".plates");
+
+      // Part of shorter solution
+      const buttons = document.querySelector(".buttons");
+
       // check if there is something on localStorage and fallback with an empty array []
       const items = JSON.parse(localStorage.getItem("items")) || [];
 
@@ -107,7 +132,6 @@
         localStorage.setItem("items", JSON.stringify(items));
         // Calling populateList() in order to update the actual visibility part on html
         populateList(items, itemsList);
-
         console.log(el.dataset.index);
       }
 
@@ -124,6 +148,62 @@
 
       // Calling populateList()
       populateList(items, itemsList);
+
+      /* Simple solution
+       * Adding buttons check-all, uncheck-all and delete-all
+       */
+
+      // const checkAllBtn = document.querySelector(".check-all");
+      // const unCheckAllBtn = document.querySelector(".uncheck-all");
+      // const deleteAllBtn = document.querySelector(".delete-all");
+
+      // checkAllBtn.addEventListener("click", () => {
+      //   items.forEach((item) => {
+      //     item.done = true;
+      //   });
+      //   populateList(items, itemsList);
+      //   localStorage.setItem("items", JSON.stringify(items));
+      // });
+
+      // unCheckAllBtn.addEventListener("click", () => {
+      //   items.forEach((item) => {
+      //     item.done = false;
+      //   });
+      //   populateList(items, itemsList);
+      //   localStorage.setItem("items", JSON.stringify(items));
+      // });
+
+      // deleteAllBtn.addEventListener("click", () => {
+      //   const items = [];
+      //   populateList(items, itemsList);
+      //   localStorage.setItem("items", JSON.stringify(items));
+      // });
+
+      /* Shorter solution
+       * Adding data-action: "check", "uncheck" and "clear"
+       */
+
+      function doButtonPress(e) {
+        const action = e.target.dataset.action;
+        switch (action) {
+          case "check":
+            items.forEach((item) => (item.done = true));
+            break;
+          case "uncheck":
+            items.forEach((item) => (item.done = false));
+            break;
+          case "clear":
+            // Empty the whole array by splice instead of items = [].
+            items.splice(0, items.length);
+            break;
+          default:
+            return;
+        }
+        populateList(items, itemsList);
+        localStorage.setItem("items", JSON.stringify(items));
+      }
+      // Part of shorter solution
+      buttons.addEventListener("click", doButtonPress);
     </script>
   </body>
 </html>
