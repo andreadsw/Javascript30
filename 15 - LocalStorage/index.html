@@ -187,10 +187,10 @@
         const action = e.target.dataset.action;
         switch (action) {
           case "check":
-            items.forEach((item) => (item.done = true));
+            items.map((item) => (item.done = true));
             break;
           case "uncheck":
-            items.forEach((item) => (item.done = false));
+            items.map((item) => (item.done = false));
             break;
           case "clear":
             // Empty the whole array by splice instead of items = [].
