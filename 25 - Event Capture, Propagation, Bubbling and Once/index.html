@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Understanding JavaScript's Capture</title>
+  </head>
+  <body class="bod">
+    <div class="one">
+      <div class="two">
+        <div class="three"></div>
+      </div>
+    </div>
+
+    <style>
+      html {
+        box-sizing: border-box;
+      }
+
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+
+      div {
+        width: 100%;
+        padding: 100px;
+      }
+
+      .one {
+        background: thistle;
+      }
+
+      .two {
+        background: mistyrose;
+      }
+
+      .three {
+        background: coral;
+      }
+    </style>
+
+    <button></button>
+    <script>
+    /*
+      Event Capture just capture the click and goes to the top to down.
+
+      Bubbling when you make a click for example it will ripple all the way up to the top of document and trigger click on those elements as well.
+
+      The event.stopPropagation() prevents further propagation of the current event in the capturing and bubbling phases.
+
+      Once is the unbinding itself. It won't run again. It is look like a div.removeEventListener('click', longText); Common use in button when you want the user click only once.
+    */
+
+      const divs = document.querySelectorAll("div");
+      const button = document.querySelector("button");
+
+      function logText(e) {
+        e.stopPropagation(); // stop bubbling!
+        //console.log(this.classList.value);
+        //console.log(this);
+      }
+
+      divs.forEach((div) =>
+        div.addEventListener("click", logText, {
+          capture: false,
+          once: true, // unbinding itself
+        })
+      );
+
+      button.addEventListener(
+        "click",
+        () => {
+          console.log("click!!!");
+        },
+        {
+          once: true,
+        }
+      );
+    </script>
+  </body>
+</html>
