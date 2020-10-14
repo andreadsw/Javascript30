@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video Speed Scrubber</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <video
+        class="flex"
+        width="765"
+        height="430"
+        src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4"
+        loop
+        controls
+      ></video>
+      <div class="speed">
+        <div class="speed-bar">1×</div>
+      </div>
+    </div>
+
+    <script>
+      const speed = document.querySelector(".speed");
+      const bar = speed.querySelector(".speed-bar");
+      const video = document.querySelector(".flex");
+
+      function handleMove(e) {
+        /*  take the offset at which the top of the parent is, and subtract
+            the offset from the y coordinate, which gives us just how much of the bar is to be filled. */
+        const y = e.pageY - this.offsetTop;
+        /* calculate the height(%), divide Y by the total height of the parent, y/offsetHeight will give us the decimal % */
+        const percent = y / this.offsetHeight;
+        const min = 0.4;
+        const max = 4;
+        // Getting in percentage
+        const height = Math.round(percent * 100) + "%";
+        /* define the boundaries of min and max our own, and multiply by 100 and get how much % of space is to be filled by speed-bar */
+        const playbackRate = percent * (max - min) + min;
+        bar.style.height = height;
+        // Display a number with two decimal places
+        bar.textContent = playbackRate.toFixed(2) + "x";
+        //console.log(playbackRate);
+        //console.log(height);
+        video.playbackRate = playbackRate;
+      }
+
+      speed.addEventListener("mousemove", handleMove);
+    </script>
+  </body>
+</html>
