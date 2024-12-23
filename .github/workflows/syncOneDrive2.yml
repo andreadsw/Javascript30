@@ -27,7 +27,7 @@ jobs:
 
       - name: Sync OneDrive Folder to GitHub
         run: |
-          rclone --config rclone.conf sync onedrive:/Documents/translations /github/workspace
+          rclone --config rclone.conf sync onedrive:/Documents/translations /workspace
 
       - name: Commit and push changes
         env:
