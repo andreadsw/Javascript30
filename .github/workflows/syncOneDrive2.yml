@@ -1,0 +1,40 @@
+name: Sync OneDrive Folder to GitHub
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install rclone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+
+      - name: Configure rclone
+        run: |
+          echo '[onedrive]' > rclone.conf
+          echo 'type = onedrive' >> rclone.conf
+          echo 'token = {"access_token":"EwCIA8l6BAAUbDba3x2OMJElkF7gJ4z/VbCPEz0AASgMQYBl2joUZV5GzHDjE5WLaC1MWfty/5r1VNdjIFrLZ1JFMyRfmlHSjrOmzadm1O57sCBY7XmnLAB0dL6yqz7CH8Lwtdl0ZLWigD98h1wzduQpio/3NCvX19d7hdNztS0zrQ0sMx2XCSV3C/taeE8qBTatevEmuV3726Ur3k0a7KjeE50L8FjHh/eKxkHxpJ1jelWd68JxIhqL4dorE5rXeADs3LPlN0QcOEoF+KuEYeqMAmrY4J5/miP4Y+S1HVyceqPV+C1Qf0lwDKpdmpJ2iK58TKZ2SWFyc0Myzz7Rl4QSf+gDNbWwk2qMEdJRLzA2OpPM6WskVhWkUdKS1ooQZgAAEGS9yFJe3repSi7K1K3kCW9QAk2jJNUONwVMwfhVzfMacboD3hg0Q/iJQ2O8tCjtSPMFMYS4JXzoHrh025eVmNQxtQ6/DZor9ZWjaAQC8Yt7gFt/xtqGwMQ1NCC64sIyotuIYfZ2StiYPR7m9M77azj8A2MPkahW6YpyiqOUEalMLsiOSsHBHu3UyGOPZgqDF0V+81yjEXJJshYTXId1mbqRl2oqsrmqAb93SFIuySz9kx+h5/x7aWYu+rfTH3hzLsjIYx4a3FF8gui5a+Yu9EIxVXQlLTJwrLCWAN7rXWY9AoEkv1wjHqxnyFxRoQ8JVYo4/8dNEdPl0/lbmeX7BVyhkELdwpDoZtyJEg+i3UlYnN6EY1HsipyJFZX+q9/MNPvv+JzeP4B4FOus0v/TsvpQ5+E9bKM7ImhbCSLF9r3Lz/QlcC92j6/zI3Lw+UlA/BGaEyRQYxBZBMoIumFLbubCoV8SJhYE2PqLb46nWAYBIZEg4V6RBLzJGX3kUE+SlxBZyrKrkN6mkUFmPOZP3U/k0LLDSGeWt+NbhNFgaUWkNGiNMne3Uin6Mu/NQjvZgHLeJGkBGSTt6HCaLNDP6vE9vwWb+RQjciLHYhGeDX5qseVQmJ1/4oZvurA/gUll/grRg0Hh8HFRJRk7c2BqlvJlsOApC7twdkUIL7e5o3GHLixcCUnaMCrT4gEm+SqFdlDtokgdQR6a8YI7GQa3k5LxmZ9ULl1yHHYUmHauEkECDf/+2OOvSpE/fa8537BsFJBlpTA6WSzWB1Oxk3paMGDTgP91QgFFi6rr9Jm9R9VIM7+SAg==","token_type":"Bearer","refresh_token":"M.C524_BAY.0.U.-CvVtKlUsEaHhm3w6wPhmkRVG*3y6TQ4DMnrbfvEUVlxLQqULXWtAZXxKL1*AtoSq755WzNhe3uRXYaquiENbCzYdJvAQCYNmIes8TmQA0mK03wHl5bp5WgFlITV7gq4KDSDMHAdiuvPnuTI*eYJk1AfxRYvdCrOFJzpK4SyW806CUcDSa96E1Y84np0rGAwA*2WUTEkmz3sI5bGr8UZrVFD04*qfwk*gUzzAxzdlxqMCjR5oDW!aaR0qGJwBz*cLbgRu2JsluuKt9GTiJw1aByYez4vEmzHNLkqF0EJ!pkLbvsmCbYidlkSBCc1UZyTMmsHZvd0cXR69GjFMmBuxTY!YQSvHlpQvY3lpWr!lkHc4","expiry":"2024-12-19T16:56:38.379937Z","token_type":"bearer","expiry":"0001-01-01T00:00:00Z"}' >> rclone.conf
+          echo 'drive_id = 1ce0881bc7ff428e' >> rclone.conf
+          echo 'drive_type = personals' >> rclone.conf
+
+      - name: Sync OneDrive Folder to GitHub
+        run: |
+          rclone --config rclone.conf sync onedrive:/Documents/translations /github/workspace
+
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Automated sync from OneDrive"
+          git push
